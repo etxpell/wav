@@ -63,7 +63,6 @@ s= wave_info(fname)
     IO.puts "========================================"
     IO.puts "file: #{inspect s.fname}, len: #{inspect s.tot_len}"
     IO.puts "   type: #{inspect s.type}, num: #{inspect s.ch}"
-    IO.puts "   type: #{inspect s.type}, num: #{inspect s.ch}"
     IO.puts "   slice: #{inspect s.slice_rate}, data #{inspect s.data_rate}"
     IO.puts "   block #{inspect s.block} depth #{inspect s.depth}"
     IO.puts "   music len #{inspect s.data_len}"

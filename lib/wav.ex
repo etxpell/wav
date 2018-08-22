@@ -11,21 +11,9 @@ defmodule Wav do
 
     s = set_opts(opts, wave_info(fname))
 
-#    base_out = rootname(fname)
-    #{:ok, outfd} = :file.open("out/" <> base_out <> "-out-0.txt", [:binary, :write])
-
-    #file_to_txt(fname, chunk_spec, s)
-    # {:ok, outfd} = :file.open("morr.txt", [:binary, :write])
-    # s = Map.put(s, :outfd, outfd)
     spec = data_chunk(chunk_spec)
     time("look_for_hits", fn() -> look_for_hits(fname, s, spec) end)
     
-
-    #:file.write(outfd, file_head(s))
-
-    #do_split(outfd, s, 0)
-
-#    :file.close(outfd)
   end
 
   defp time(str, func) do
@@ -33,6 +21,29 @@ defmodule Wav do
     IO.puts "#{str}: #{inspect div(t, 1000)}"
     r
   end
+
+  def show(fname, pos, len \\ 10) do
+    s = set_opts([], wave_info(fname))
+    {:ok, fd} = :file.open(fname, [:binary, :read])
+    s = Map.put(s, :fd, fd)
+    start = spec.pos + max((pos - len+1), 0)
+    stop  = start+1+2*(len-1)
+    :file.position(fd, start)
+    show2(s, start..stop)
+    :file.close(fd)
+  end
+
+  defp show2(s, []) do
+    []
+  end
+  defp show2(s, [pos|rest]) do
+    case read_block(s) do
+      ints when is_list(ints) ->
+        IO.puts " >> #{inspect pos} : #{inspect ints}"
+        show2(s, rest)
+    end
+  end
+
 
   defp look_for_hits(fname, s, spec) do
     {:ok, fd} = :file.open(fname, [:binary, :read])

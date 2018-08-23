@@ -22,14 +22,29 @@ defmodule Wav do
     r
   end
 
+# PearlMasterSnareRev.wav
+# pos: 4508 / 739, orig: 4574 / 750, after: 269108
+# pos: 273452 / 45563, orig: 273518 / 45574, after: 538052
+# pos: 538064 / 89665, orig: 538064 / 89665, after: 802664
+# pos: 814604 / 135755, orig: 814670 / 135766, after: 1079204
+# 
+# PearlMaster.wav
+# pos: 14432 / 2393, orig: 14432 / 2393, after: 279032
+# pos: 490754 / 81780, orig: 490754 / 81780, after: 755354
+# pos: 1012028 / 168659, orig: 1012034 / 168660, after: 1276628
+# pos: 1597838 / 266294, orig: 1597838 / 266294, after: 1862438
+# pos: 2179094 / 363170, orig: 2179094 / 363170, after: 2443694
+
   def show(fname, pos, len \\ 10) do
+    chunk_spec = list_chunks(fname)
+    spec = data_chunk(chunk_spec)
     s = set_opts([], wave_info(fname))
     {:ok, fd} = :file.open(fname, [:binary, :read])
     s = Map.put(s, :fd, fd)
     start = spec.pos + max((pos - len+1), 0)
     stop  = start+1+2*(len-1)
     :file.position(fd, start)
-    show2(s, start..stop)
+    show2(s, start..stop |> Enum.to_list)
     :file.close(fd)
   end
 
